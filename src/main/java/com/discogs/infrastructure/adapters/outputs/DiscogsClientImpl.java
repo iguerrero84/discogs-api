@@ -1,8 +1,7 @@
-package com.discogs.infrastructure.adapters.api;
+package com.discogs.infrastructure.adapters.outputs;
 
 import com.discogs.domain.ports.DiscogsClient;
-import com.discogs.domain.ports.ReleaseResponse;
-import com.discogs.infrastructure.configuration.AppConfig;
+import com.discogs.domain.dto.ReleaseResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,16 +21,19 @@ public class DiscogsClientImpl implements DiscogsClient {
     private final RestTemplate template = new RestTemplate();
 
     @Override
-    public ReleaseResponse searchArtistRelease(String discogsId) throws MalformedURLException, URISyntaxException {
+    public ReleaseResponseDTO searchArtistRelease(String discogsId) {
         URL url = null;
         try {
             url = new URL(DISCOGS_URL + discogsId);
         } catch (MalformedURLException e) {
-            LOGGER.error("There was an error with DISCOGS_URL in searchArtistRelease");
-            throw new MalformedURLException();
+            LOGGER.error("There was an error with DISCOGS_URL using DISCOGS_URL");
         }
 
-        return template.getForObject(url.toURI(), ReleaseResponse.class);
-
+        try {
+            return template.getForObject(url.toURI(), ReleaseResponseDTO.class);
+        } catch (URISyntaxException e) {
+            LOGGER.error("There was an error with DISCOGS_URL from template");
+        }
+        return null;
     }
 }

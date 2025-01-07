@@ -2,13 +2,11 @@ package com.discogs.infrastructure.configuration;
 
 import com.discogs.domain.model.Artist;
 import com.discogs.domain.model.Release;
-import com.discogs.domain.ports.ReleaseResponse;
-import com.discogs.infrastructure.adapters.api.DiscogsClientImpl;
+import com.discogs.domain.dto.ReleaseResponseDTO;
+import com.discogs.infrastructure.adapters.outputs.DiscogsClientImpl;
 import org.hibernate.Session;
 import org.springframework.stereotype.Component;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,14 +16,14 @@ public class AppDemoDBLoader {
 
     private static final DiscogsClientImpl discogsClient = new DiscogsClientImpl();
 
-    public static void startDemoDatabaseLoader() throws URISyntaxException, MalformedURLException {
+    public static void startDemoDatabaseLoader() {
 
         Session session = HibernateConfig.getSessionFactory().getCurrentSession();
         session.beginTransaction();
 
         for (int i = 0; i <= 10; i++) {
             String discogsId = "24950" + i;
-            ReleaseResponse r = discogsClient.searchArtistRelease(discogsId);
+            ReleaseResponseDTO r = discogsClient.searchArtistRelease(discogsId);
 
             Artist artist = new Artist();
             artist.setDiscogsId(discogsId);

@@ -1,0 +1,15 @@
+meta {
+  name: compare artists
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/api/compare-artists
+  body: json
+  auth: none
+}
+
+body:json {
+  [249500, 249501, 249502]
+}

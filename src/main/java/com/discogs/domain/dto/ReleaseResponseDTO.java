@@ -1,4 +1,4 @@
-package com.discogs.domain.ports;
+package com.discogs.domain.dto;
 
 import com.discogs.domain.model.Artist;
 import com.discogs.domain.model.Company;
@@ -7,7 +7,7 @@ import com.discogs.domain.model.Track;
 
 import java.util.List;
 
-public record ReleaseResponse(
+public record ReleaseResponseDTO(
         String id,
         String status,
         String year,

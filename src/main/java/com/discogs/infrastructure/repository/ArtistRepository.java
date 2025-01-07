@@ -1,4 +1,4 @@
-package com.discogs.domain.ports;
+package com.discogs.infrastructure.repository;
 
 import com.discogs.domain.model.Artist;
 import org.springframework.data.jpa.repository.JpaRepository;

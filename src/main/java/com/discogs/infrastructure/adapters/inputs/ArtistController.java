@@ -1,8 +1,8 @@
-package com.discogs.infrastructure.http;
+package com.discogs.infrastructure.adapters.inputs;
 
 import com.discogs.application.ArtistService;
 import com.discogs.domain.dto.ArtistDTO;
-import com.discogs.domain.ports.ReleaseResponse;
+import com.discogs.domain.dto.ReleaseResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.jdbc.support.JdbcUtils.isNumeric;
 
 @RestController
 @RequestMapping("/api")
@@ -31,7 +29,7 @@ public class ArtistController {
     }
 
     @GetMapping("/discogs-release/{id}")
-    public ResponseEntity<ReleaseResponse> getDiscogsRelease(@PathVariable String id) {
+    public ResponseEntity<ReleaseResponseDTO> getDiscogsRelease(@PathVariable String id) {
         try {
             Integer.parseInt(id);
             return new ResponseEntity<>(artistService.getDiscogsRelease(id), HttpStatusCode.valueOf(HttpStatus.OK.value()));

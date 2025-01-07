@@ -4,9 +4,11 @@ import com.discogs.domain.dto.ArtistDTO;
 import com.discogs.domain.dto.ReleaseDTO;
 import com.discogs.domain.model.Artist;
 import com.discogs.domain.model.Release;
-import com.discogs.domain.ports.ArtistRepository;
+import com.discogs.infrastructure.repository.ArtistRepository;
 import com.discogs.domain.ports.DiscogsClient;
-import com.discogs.domain.ports.ReleaseResponse;
+import com.discogs.domain.dto.ReleaseResponseDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
@@ -21,6 +23,8 @@ import static com.discogs.infrastructure.configuration.AppDemoDBLoader.startDemo
 
 @Service
 public class ArtistService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArtistService.class);
+
     private final ArtistRepository artistRepository;
     private final DiscogsClient discogsClient;
 
@@ -32,16 +36,18 @@ public class ArtistService {
     }
 
 
-    public void initDatabaseLoadFromDisgosApi() throws Exception {
+    public void initDatabaseLoadFromDisgosApi() {
         startDemoDatabaseLoader();
     }
 
-    public ReleaseResponse getDiscogsRelease(String id) {
+    public ReleaseResponseDTO getDiscogsRelease(String id) {
+        ReleaseResponseDTO result = null;
         try {
-            return discogsClient.searchArtistRelease(id);
-        } catch (URISyntaxException | MalformedURLException e) {
-            throw new RuntimeException(e);
+            result = discogsClient.searchArtistRelease(id);
+        } catch (MalformedURLException | URISyntaxException e ) {
+            LOGGER.error("There was an error getting Discogs releases");
         }
+        return result;
     }
 
     public List<ArtistDTO> getAllArtists() {
@@ -88,7 +94,17 @@ public class ArtistService {
                     .map(Release::getGenre)
                     .collect(Collectors.joining(", "));  // Join genres with comma separation
 
+            String country = artist.getReleases().stream()
+                            .map(Release::getCountry)
+                                    .collect(Collectors.joining());
+
+            String albumTitle = artist.getReleases().stream()
+                    .map(Release::getTitle)
+                    .collect(Collectors.joining());
+
             artistData.put("commonGenres", commonGenres);
+            artistData.put("albumTitle", albumTitle);
+            artistData.put("country", country);
 
             return artistData;
         }).sorted((a, b) -> {
@@ -102,4 +118,6 @@ public class ArtistService {
             return Integer.compare(yearAInt, yearBInt);
         }).toList();
     }
+
+
 }

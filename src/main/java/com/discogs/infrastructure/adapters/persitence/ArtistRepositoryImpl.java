@@ -1,6 +1,6 @@
 package com.discogs.infrastructure.adapters.persitence;
 
-import com.discogs.domain.ports.ArtistRepository;
+import com.discogs.infrastructure.repository.ArtistRepository;
 import org.springframework.stereotype.Repository;
 
 
